@@ -6,6 +6,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+import hashlib
 
 
 class User(BaseModel, Base):
@@ -26,4 +27,11 @@ class User(BaseModel, Base):
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
+        if kwargs:
+            pw = kwargs.pop('pasword', None)
+            if pw:
+                hashe = hashlib.md5()
+                hashe.update(pw.encode('utf-8'))
+                secure = hashe.hexdigest()
+                kwargs['password'] = secure
         super().__init__(*args, **kwargs)
