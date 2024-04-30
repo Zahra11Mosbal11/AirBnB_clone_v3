@@ -8,13 +8,13 @@ from models import storage
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
 def get_status():
     """Returns status OK"""
-    resp =  jsonify({"status": "OK"})
+    resp = jsonify({"status": "OK"})
     resp.status_code = 200
 
     return resp
 
 
-@app_views.route('/status', methods=['GET'], strict_slashes=False)
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def stasts():
     """Retrieves the number of each objects by type"""
     stats = {
