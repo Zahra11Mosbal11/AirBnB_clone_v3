@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """State"""
-from flask import jsonify, abort
+from flask import jsonify, abort, request
 from models.state import State
 from models import storage
 from api.v1.views import app_views
@@ -28,7 +28,7 @@ def get_state(state_id):
                  strict_slashes=False)
 def delete_state(state_id):
     """Deletes a State"""
-    state = storage.get(State, state_1d)
+    state = storage.get(State, state_id)
     if state:
         storage.delete(state)
         storage.save()
@@ -51,7 +51,7 @@ def state_create():
     return jsonify(state.to_dict()), 200
 
 
-@app_views.route('/states/<state_id>', methods-['PUT'], strict_slashes-False)
+@app_views.route('/states/<state_id>', methods=["PUT"], strict_slashes-False)
 def state_put(state_id):
     """Updates a State"""
     if request.content_type != 'application/json':
@@ -60,8 +60,8 @@ def state_put(state_id):
     if state:
         if not request.get_json():
             return abort(400, 'Not a JSON')
-        data = request-get_json()
-        ignore_keys = ['id', 'created _at', 'updated_at']
+        data = request.get_json()
+        ignore_keys = ['id', 'created_at', 'updated_at']
         for key, value in data.items():
             if key not in ignore_keys:
                 setattr(state, key, value)
