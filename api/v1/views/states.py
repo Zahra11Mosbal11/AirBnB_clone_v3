@@ -51,7 +51,7 @@ def state_create():
     return jsonify(state.to_dict()), 200
 
 
-@app_views.route('/states/<state_id>', methods=["PUT"], strict_slashes-False)
+@app_views.route('/states/<state_id>', methods=["PUT"], strict_slashes=False)
 def state_put(state_id):
     """Updates a State"""
     if request.content_type != 'application/json':
