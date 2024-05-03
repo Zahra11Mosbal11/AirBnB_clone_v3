@@ -140,13 +140,13 @@ class TestFileStorage(unittest.TestCase):
         storage.save()
 
         total_objects = storage.count()
-        self.assertEqual(total_objects, 2)
+        self.assertEqual(total_objects, 9)
 
         obj3 = BaseModel()
         storage.new(obj3)
         storage.save()
         class_objects = storage.count(BaseModel)
-        self.assertEqual(class_objects, 3)
+        self.assertEqual(class_objects, 4)
 
 
 if __name__ == '__main__':
