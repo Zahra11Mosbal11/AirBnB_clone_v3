@@ -4,6 +4,7 @@ Contains the TestFileStorageDocs classes
 """
 
 from datetime import datetime
+from models import storage
 import inspect
 import models
 from models.engine import file_storage
@@ -117,7 +118,35 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
         """Test that get retrieves objects stored in file.json"""
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        storage.new(obj1)
+        storage.new(obj2)
+        storage.save()
+
+        retrieved_obj1 = storage.get(BaseModel, obj1.id)
+        self.assertEqual(retrieved_obj1, obj1)
+
+        non_existent_obj = storage.get(BaseModel, "non_existent_id")
+        self.assertIsNone(non_existent_obj)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_count(self):
         """Test that count returns the right number of objects in file.json"""
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        storage.new(obj1)
+        storage.new(obj2)
+        storage.save()
+
+        total_objects = storage.count()
+        self.assertEqual(total_objects, 2)
+
+        obj3 = BaseModel()
+        storage.new(obj3)
+        storage.save()
+        class_objects = storage.count(BaseModel)
+        self.assertEqual(class_objects, 3)
+
+if __name__ == '__main__':
+    unittest.main()
