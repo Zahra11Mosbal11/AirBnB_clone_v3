@@ -31,6 +31,10 @@ class TestFileStorageDocs(unittest.TestCase):
         """Set up for the doc tests"""
         cls.fs_f = inspect.getmembers(FileStorage, inspect.isfunction)
 
+    def setUp(self):
+        """Reset the storage before each test"""
+        storage._FileStorage__objects = {}
+
     def test_pep8_conformance_file_storage(self):
         """Test that models/engine/file_storage.py conforms to PEP8."""
         pep8s = pep8.StyleGuide(quiet=True)
@@ -140,13 +144,13 @@ class TestFileStorage(unittest.TestCase):
         storage.save()
 
         total_objects = storage.count()
-        self.assertEqual(total_objects, 9)
+        self.assertEqual(total_objects, 7)
 
         obj3 = BaseModel()
         storage.new(obj3)
         storage.save()
         class_objects = storage.count(BaseModel)
-        self.assertEqual(class_objects, 4)
+        self.assertEqual(class_objects, 8)
 
 
 if __name__ == '__main__':

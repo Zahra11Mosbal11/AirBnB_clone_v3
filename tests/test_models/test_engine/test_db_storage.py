@@ -4,6 +4,7 @@ Contains the TestDBStorageDocs and TestDBStorage classes
 """
 
 from datetime import datetime
+from models import storage
 import inspect
 import models
 from models.engine import db_storage
@@ -29,6 +30,10 @@ class TestDBStorageDocs(unittest.TestCase):
     def setUpClass(cls):
         """Set up for the doc tests"""
         cls.dbs_f = inspect.getmembers(DBStorage, inspect.isfunction)
+
+    def setUp(self):
+        """Reset the storage before each test"""
+        storage._FileStorage__objects = {}
 
     def test_pep8_conformance_db_storage(self):
         """Test that models/engine/db_storage.py conforms to PEP8."""
@@ -87,10 +92,39 @@ class TestFileStorage(unittest.TestCase):
     def test_save(self):
         """Test that save properly saves objects to file.json"""
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
-        """Test that get retrieves an item in db properly"""
+        """Test that get retrieves objects stored in file.json"""
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        storage.new(obj1)
+        storage.new(obj2)
+        storage.save()
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+        retrieved_obj1 = storage.get(BaseModel, obj1.id)
+        self.assertEqual(retrieved_obj1, obj1)
+
+        non_existent_obj = storage.get(BaseModel, "non_existent_id")
+        self.assertIsNone(non_existent_obj)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_count(self):
-        """Test that count returns the right number of elements in the db"""
+        """Test that count returns the right number of objects in file.json"""
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        storage.new(obj1)
+        storage.new(obj2)
+        storage.save()
+
+        total_objects = storage.count()
+        self.assertEqual(total_objects, 2)
+
+        obj3 = BaseModel()
+        storage.new(obj3)
+        storage.save()
+        class_objects = storage.count(BaseModel)
+        self.assertEqual(class_objects, 3)
+
+
+if __name__ == '__main__':
+    unittest.main()
