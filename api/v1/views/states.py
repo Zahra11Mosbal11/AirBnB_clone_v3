@@ -66,6 +66,6 @@ def state_put(state_id):
             if key not in ignore_keys:
                 setattr(state, key, value)
         state.save()
-        return jsonify(state.to_dict()), 200
+        return jsonify(state.to_dict()), 201
     else:
-        return abort(404)
+        return abort(400)
